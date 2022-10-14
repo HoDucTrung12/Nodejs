@@ -6,6 +6,8 @@ const path = require('path');
 const app = express();
 const port = 3000;
 
+const route = require('./routes'); // Route
+
 app.use(morgan("combined")); // HTTP logger
 
 app.engine('hbs', exphbs.engine({
@@ -16,13 +18,17 @@ app.set('views', path.join(__dirname, 'resources/views'));
 
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.get('/', (req, res) => { 
-  res.render('home')
-})
+app.use(express.urlencoded({
+  extended: true
+})); // Apply middle ware of body
+app.use(express.json());
 
-app.get('/news', (req, res) => { 
-  res.render('news')
-})
+
+// Routes init
+route(app);
+
+
+
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
